@@ -1,0 +1,17 @@
+Table customer {
+  id bigint [pk, increment]
+  name varchar [not null, note: 'Customer name']
+  email varchar [not null, note: 'Must be a valid email']
+}
+
+Table orders {
+  id bigint [pk, increment]
+  product varchar
+  quantity integer
+  price double
+  order_date date
+  customer_id bigint [not null, ref: > customer.id]
+}
+
+Ref: orders.customer_id > customer.id [delete: cascade]
+

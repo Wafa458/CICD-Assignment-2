@@ -1,0 +1,357 @@
+===============================================================
+  SAMPLE API REQUESTS — Order Microservice (port 9090)
+===============================================================
+
+
+========================
+  CUSTOMER CONTROLLER
+  Base URL: /api/customers
+========================
+
+
+--- 1. CREATE CUSTOMER (POST /api/customers) ---
+
+curl -X POST http://localhost:9090/api/customers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Alice Johnson",
+    "email": "alice@example.com"
+  }'
+
+Expected Response (200 OK):
+{
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "totalOrders": 0
+}
+
+
+--- 2. CREATE ANOTHER CUSTOMER (POST /api/customers) ---
+
+curl -X POST http://localhost:9090/api/customers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Bob Smith",
+    "email": "bob@example.com"
+  }'
+
+Expected Response (200 OK):
+{
+    "id": 2,
+    "name": "Bob Smith",
+    "email": "bob@example.com",
+    "totalOrders": 0
+}
+
+
+--- 3. CREATE CUSTOMER — VALIDATION ERROR (POST /api/customers) ---
+
+curl -X POST http://localhost:9090/api/customers \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "",
+    "email": "not-an-email"
+  }'
+
+Expected Response (400 Bad Request):
+{
+    "timestamp": "...",
+    "status": 400,
+    "error": "Validation failed",
+    "path": "/api/customers",
+    "fieldErrors": {
+        "name": "Name is required",
+        "email": "Email must be valid"
+    }
+}
+
+
+--- 4. GET ALL CUSTOMERS (GET /api/customers) ---
+
+curl -X GET http://localhost:9090/api/customers
+
+Expected Response (200 OK):
+[
+    {
+        "id": 1,
+        "name": "Alice Johnson",
+        "email": "alice@example.com",
+        "totalOrders": 0
+    },
+    {
+        "id": 2,
+        "name": "Bob Smith",
+        "email": "bob@example.com",
+        "totalOrders": 0
+    }
+]
+
+
+--- 5. GET CUSTOMER BY ID (GET /api/customers/{id}) ---
+
+curl -X GET http://localhost:9090/api/customers/1
+
+Expected Response (200 OK):
+{
+    "id": 1,
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "totalOrders": 0
+}
+
+
+--- 6. GET CUSTOMER BY ID — NOT FOUND (GET /api/customers/{id}) ---
+
+curl -X GET http://localhost:9090/api/customers/999
+
+Expected Response (404 Not Found)
+
+
+--- 7. UPDATE CUSTOMER (PUT /api/customers/{id}) ---
+
+curl -X PUT http://localhost:9090/api/customers/1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Alice Updated",
+    "email": "alice.updated@example.com"
+  }'
+
+Expected Response (200 OK):
+{
+    "id": 1,
+    "name": "Alice Updated",
+    "email": "alice.updated@example.com",
+    "totalOrders": 0
+}
+
+
+--- 8. UPDATE CUSTOMER — NOT FOUND (PUT /api/customers/{id}) ---
+
+curl -X PUT http://localhost:9090/api/customers/999 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Ghost",
+    "email": "ghost@example.com"
+  }'
+
+Expected Response (404 Not Found)
+
+
+--- 9. DELETE CUSTOMER (DELETE /api/customers/{id}) ---
+
+curl -X DELETE http://localhost:9090/api/customers/2
+
+Expected Response (204 No Content)
+
+
+--- 10. DELETE CUSTOMER — NOT FOUND (DELETE /api/customers/{id}) ---
+
+curl -X DELETE http://localhost:9090/api/customers/999
+
+Expected Response (404 Not Found)
+
+
+========================
+  ORDER CONTROLLER
+  Base URL: /api/orders
+========================
+
+
+--- 11. CREATE ORDER (POST /api/orders) ---
+
+curl -X POST http://localhost:9090/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": 1,
+    "product": "Laptop",
+    "quantity": 2,
+    "price": 999.99,
+    "orderDate": "2026-03-01"
+  }'
+
+Expected Response (200 OK):
+{
+    "id": 1,
+    "product": "Laptop",
+    "quantity": 2,
+    "price": 999.99,
+    "orderDate": "2026-03-01",
+    "customerId": 1,
+    "customerName": "Alice Updated"
+}
+
+
+--- 12. CREATE ANOTHER ORDER (POST /api/orders) ---
+
+curl -X POST http://localhost:9090/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": 1,
+    "product": "Phone",
+    "quantity": 1,
+    "price": 499.99,
+    "orderDate": "2026-02-15"
+  }'
+
+Expected Response (200 OK):
+{
+    "id": 2,
+    "product": "Phone",
+    "quantity": 1,
+    "price": 499.99,
+    "orderDate": "2026-02-15",
+    "customerId": 1,
+    "customerName": "Alice Updated"
+}
+
+
+--- 13. CREATE ORDER — VALIDATION ERROR (POST /api/orders) ---
+
+curl -X POST http://localhost:9090/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product": "",
+    "quantity": null,
+    "price": null,
+    "orderDate": null
+  }'
+
+Expected Response (400 Bad Request):
+{
+    "timestamp": "...",
+    "status": 400,
+    "error": "Validation failed",
+    "path": "/api/orders",
+    "fieldErrors": {
+        "customerId": "customerId is required",
+        "product": "product is required",
+        "quantity": "quantity is required",
+        "price": "price is required",
+        "orderDate": "orderDate is required"
+    }
+}
+
+
+--- 14. CREATE ORDER — CUSTOMER NOT FOUND (POST /api/orders) ---
+
+curl -X POST http://localhost:9090/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": 999,
+    "product": "Tablet",
+    "quantity": 1,
+    "price": 299.99,
+    "orderDate": "2026-03-01"
+  }'
+
+Expected Response (500 Internal Server Error):
+RuntimeException: Customer not found: 999
+
+
+--- 15. GET ALL ORDERS — PAGINATED (GET /api/orders) ---
+
+curl -X GET "http://localhost:9090/api/orders?page=0&size=5"
+
+Expected Response (200 OK):
+{
+    "content": [
+        {
+            "id": 1,
+            "product": "Laptop",
+            "quantity": 2,
+            "price": 999.99,
+            "orderDate": "2026-03-01",
+            "customerId": 1,
+            "customerName": "Alice Updated"
+        },
+        {
+            "id": 2,
+            "product": "Phone",
+            "quantity": 1,
+            "price": 499.99,
+            "orderDate": "2026-02-15",
+            "customerId": 1,
+            "customerName": "Alice Updated"
+        }
+    ],
+    "currentPage": 0,
+    "pageSize": 5,
+    "totalElements": 2
+}
+
+
+--- 16. GET ORDER BY ID (GET /api/orders/{id}) ---
+
+curl -X GET http://localhost:9090/api/orders/1
+
+Expected Response (200 OK):
+{
+    "id": 1,
+    "product": "Laptop",
+    "quantity": 2,
+    "price": 999.99,
+    "orderDate": "2026-03-01",
+    "customerId": 1,
+    "customerName": "Alice Updated"
+}
+
+
+--- 17. GET ORDER BY ID — NOT FOUND (GET /api/orders/{id}) ---
+
+curl -X GET http://localhost:9090/api/orders/999
+
+Expected Response (404 Not Found)
+
+
+--- 18. GET ORDERS BY DATE RANGE — PAGINATED (GET /api/orders/range) ---
+
+curl -X GET "http://localhost:9090/api/orders/range?from=2026-02-01&to=2026-03-31&page=0&size=5"
+
+Expected Response (200 OK):
+{
+    "content": [
+        {
+            "id": 1,
+            "product": "Laptop",
+            "quantity": 2,
+            "price": 999.99,
+            "orderDate": "2026-03-01",
+            "customerId": 1,
+            "customerName": "Alice Updated"
+        },
+        {
+            "id": 2,
+            "product": "Phone",
+            "quantity": 1,
+            "price": 499.99,
+            "orderDate": "2026-02-15",
+            "customerId": 1,
+            "customerName": "Alice Updated"
+        }
+    ],
+    "currentPage": 0,
+    "pageSize": 5,
+    "totalElements": 2
+}
+
+
+--- 19. GET ORDERS BY DATE RANGE — INVALID RANGE (GET /api/orders/range) ---
+
+curl -X GET "http://localhost:9090/api/orders/range?from=2026-12-01&to=2026-01-01&page=0&size=5"
+
+Expected Response (400 Bad Request)
+
+
+--- 20. GET ORDERS BY DATE RANGE — NO RESULTS (GET /api/orders/range) ---
+
+curl -X GET "http://localhost:9090/api/orders/range?from=2020-01-01&to=2020-12-31&page=0&size=5"
+
+Expected Response (200 OK):
+{
+    "content": [],
+    "currentPage": 0,
+    "pageSize": 5,
+    "totalElements": 0
+}
+
