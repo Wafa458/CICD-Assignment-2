@@ -38,11 +38,12 @@ jobs:
         run: ./mvnw test
 
       - name: SonarCloud Scan
-        run: ./mvnw sonar:sonar \
-          -Dsonar.projectKey=CICD-Assignment-2 \
-          -Dsonar.organization=wafa458 \
+        run: ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.organization=wafa458 \
+          -Dsonar.projectKey=CICD-Assignment-2 \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+          -Dsonar.qualitygate.wait=true
 
       - name: Derive image name
         id: image
