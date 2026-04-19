@@ -34,14 +34,14 @@ jobs:
           cache-dependency-path: order/pom.xml
 
       - name: Make Maven wrapper executable
-        run: chmod +x mvnw
+        run: chmod +x mvn
 
       - name: Run tests
-        run: ./mvnw test
+        run: ./mvn test
 
       - name: Run SonarCloud analysis
         run: >
-          ./mvnw -X verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          ./mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
