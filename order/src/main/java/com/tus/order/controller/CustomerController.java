@@ -14,11 +14,10 @@ import java.util.List;
 public class CustomerController {
 
     private final CustomerService service;
-    private String password;
 
-    public CustomerController(CustomerService service) {
+     public CustomerController(CustomerService service) {
         this.service = service;
-        this.password = "thisisnotright";
+    
     }
 
     @GetMapping
