@@ -78,9 +78,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@0.7.0
         with:
           command: |
-            owner="$(echo "${${{ secrets.GITHUB_REPOSITORY_OWNER }}}" | tr '[:upper:]' '[:lower:]')"
-            repo="$(echo "${${{ secrets.GITHUB_REPOSITORY}}#*/}" | tr '[:upper:]' '[:lower:]')" 
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u wafa458 --password-stdin; docker pull ghcr.io/${owner}/${repo}-order:latest; docker stop prod; docker container prune -f; docker run --name prod -d -p 127.0.0.1:9090:9090/tcp ghcr.io/${owner}/${repo}-order 
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u wafa458 --password-stdin; docker pull ghcr.io/${owner}/${repo}-order:latest; docker stop prod; docker container prune -f; docker run --name prod -d -p 127.0.0.1:9090:9090/tcp ghcr.io/wafa458/cicd-assignment-2-order 
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
