@@ -9,9 +9,15 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: order
+
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
 
     steps:
       - name: Check out code
@@ -37,11 +43,10 @@ jobs:
         run: >
           ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.organization=wafa458
-          -Dsonar.projectKey=Wafa458_CICD-Assignment-2
+          -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
+          -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+          -Dsonar.login=${{ env.SONAR_TOKEN }}
           -Dsonar.qualitygate.wait=true
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Upload test reports on failure
         if: failure()
