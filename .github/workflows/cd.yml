@@ -37,7 +37,6 @@ jobs:
       - name: Run tests
         run: ./mvnw test
 
-
       - name: Derive image name
         id: image
         shell: bash
