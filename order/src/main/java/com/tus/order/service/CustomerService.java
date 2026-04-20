@@ -13,10 +13,9 @@ import java.util.Optional;
 @Service
 public class CustomerService {
 private final CustomerRepository repo;
-public String Password;
 public CustomerService(CustomerRepository repo) {
         this.repo = repo;
-        this.password = "wrong password";
+        
     }
 
     // Convert Entity -> DTO
